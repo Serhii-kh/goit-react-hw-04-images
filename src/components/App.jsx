@@ -21,7 +21,7 @@ export class App extends Component {
 
 		return (
 			<div className={css.App}>
-				<Searchbar handleSubmit={this.onSubmit} />
+				<Searchbar handlerFormSubmit={this.onSubmit} />
 				<ImageGallery searchQuery={searchQuery} />
 			</div>
 		);

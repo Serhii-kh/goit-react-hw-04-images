@@ -18,7 +18,6 @@ export const fetchImages = async (searchQuery, page) => {
     if (responseData.hits.length === 0) {
       alert('Please enter a valid search query');
     }
-    console.log(responseData);
     return responseData;
   } catch (error) {
     console.log(error);

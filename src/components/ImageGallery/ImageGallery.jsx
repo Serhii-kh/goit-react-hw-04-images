@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 import { fetchImages } from 'Api/fetchImages';
 import { Button } from 'components/Button/Button';
@@ -7,94 +7,102 @@ import css from './ImageGallery.module.css';
 import PropTypes from 'prop-types'
 
 let page = 1;
-export class ImageGallery extends Component {
-	state = {
-		images: [],
-		error: null,
-		loading: false,
-		totalHits: 0,
-		hits: 0,
-	};
 
-	componentDidUpdate(prevProps) {
-		const prevSearchQuery = prevProps.searchQuery;
-		const nextSearchQuery = this.props.searchQuery;
+export const ImageGallery = (searchQuery) => {
+	const [images, setImages] = useState([])
+	const [error, setError] = useState(null)
+	const [loading, setLoading] = useState(false)
+	const [totalHits, setTotalHits] = useState(0)
+	const [hits, setHits] = useState(0)
 
-		if (prevSearchQuery !== nextSearchQuery) {
-			page = 1;
-			this.setState({
-				loading: true,
-			})
 
-			
+	useEffect(() => {
+		page = 1
+		setLoading(!loading)
+		if (images) {
 			try {
-				fetchImages(nextSearchQuery, page).then(({ hits, totalHits }) =>
-					this.setState({
-						images: hits,
-						hits: hits.length,
-						totalHits,
-					})
+				fetchImages(searchQuery, page).then(({ hits, totalHits }) =>
+					setImages(hits)
+					// setHits(hits.length)
+					// setTotalHits(totalHits)
+
 				);
 				page += 1;
 			} catch (error) {
-				this.setState({ error })
+				setError(error)
 			}
 			finally {
-				this.setState({
-					loading: false,
-				})
+				setLoading(!loading)
 			}
 		}
-	}
+	}, [searchQuery])
 
-	handleLoadMoreBtnClick = () => {
-		this.setState({
-			loading: true,
-		})
+
+	// componentDidUpdate(prevProps) {
+	// 	if (prevSearchQuery !== nextSearchQuery) {
+	// 		page = 1;
+	// 		this.setState({
+	// 			loading: true,
+	// 		})
+
+
+	// 		try {
+	// 			fetchImages(searchQuery, page).then(({ hits, totalHits }) =>
+	// 				setImages(hits)
+	// 				setHits(hits.length)
+	// 				setTotalHits(totalHits)
+
+	// 			);
+	// 			page += 1;
+	// 		} catch (error) {
+	// 		setError(error)
+	// 		}
+	// 		finally {
+	// 			setLoading(!loading)
+	// 		}
+	// 	}
+	// }
+
+	const handleLoadMoreBtnClick = () => {
+		setLoading(!loading)
 
 		try {
-			fetchImages(this.props.searchQuery, page).then(({ hits }) =>
-				this.setState(state => ({
-					images: [...state.images, ...hits],
-					hits: (state.hits + hits.length),
-				}))
+			fetchImages(searchQuery, page).then(({ hits }) =>
+				setImages(images => [...images, ...hits])
+				// setHits(hits => (hits + hits.length))
 			);
 			page += 1;
 		} catch (error) {
 
 		} finally {
-			this.setState({
-				loading: false,
-			})
+			setLoading(!loading)
 		}
 	};
 
-	render() {
-		const { images, loading, hits, totalHits } = this.state;
-		const imagesLength = this.state.images.length;
+	const imagesLength = images.length;
 
-		return (
-			<div className={css.listWrapper}>
-				{loading && <Loader />}
-				{imagesLength > 0 && (
-					<>
-						<ul className={css.ImageGallery}>
-							{images.map((image) => (
-								<ImageGalleryItem key={image.id} image={image}
-								/>
-							))}
-						</ul>
+	return (
+		<div className={css.listWrapper}>
+			{loading && <Loader />}
+			{imagesLength > 0 && (
+				<>
+					<ul className={css.ImageGallery}>
+						{images.map((image) => (
+							<ImageGalleryItem key={image.id} image={image}
+							/>
+						))}
+					</ul>
 
-						{hits < totalHits && <Button
-							type="button"
-							onClick={this.handleLoadMoreBtnClick}>
-							Load more
-						</Button>}
-					</>
-				)}
-			</div>
-		);
-	}
+					{hits < totalHits && <Button
+						type="button"
+						onClick={handleLoadMoreBtnClick}>
+						Load more
+					</Button>}
+				</>
+			)}
+		</div>
+	);
+
 }
 
 

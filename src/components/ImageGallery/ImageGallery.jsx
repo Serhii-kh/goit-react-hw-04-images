@@ -26,6 +26,7 @@ export class ImageGallery extends Component {
 				loading: true,
 			})
 
+			
 			try {
 				fetchImages(nextSearchQuery, page).then(({ hits, totalHits }) =>
 					this.setState({

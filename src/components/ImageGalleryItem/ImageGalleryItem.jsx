@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 
 export const ImageGalleryItem = ({ image }) => {
 	const [showModal, setShowModal] = useState(false)
-
 	const { tags, webformatURL, largeImageURL } = image
 
 	const toggleModal = () => {

@@ -18,23 +18,24 @@ export const ImageGallery = (searchQuery) => {
 
 	useEffect(() => {
 		page = 1
-		setLoading(!loading)
+		setLoading(true)
 		if (images) {
 			try {
 				fetchImages(searchQuery, page).then(({ hits, totalHits }) =>
 					setImages(hits)
 					// setHits(hits.length)
 					// setTotalHits(totalHits)
-
 				);
 				page += 1;
 			} catch (error) {
 				setError(error)
 			}
 			finally {
-				setLoading(!loading)
+				setLoading(false)
 			}
 		}
+			
+		
 	}, [searchQuery])
 
 

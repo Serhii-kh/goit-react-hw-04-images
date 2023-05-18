@@ -80,8 +80,6 @@ export const ImageGallery = ({ searchQuery }) => {
 	// 	}
 	// }, [page])
 
-
-
 	return (
 		<div className={css.listWrapper}>
 			{loading && <Loader />}

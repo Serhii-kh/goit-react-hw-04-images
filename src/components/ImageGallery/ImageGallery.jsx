@@ -6,20 +6,22 @@ import { Loader } from 'components/Loader/Loader';
 import css from './ImageGallery.module.css';
 import PropTypes from 'prop-types'
 
-// let page = 1;
+let page = 1;
 
-export const ImageGallery = ({searchQuery}) => {
+export const ImageGallery = ({ searchQuery }) => {
 	const [images, setImages] = useState([])
-	const [error, setError] = useState(null)
+	// const [error, setError] = useState(null)
 	const [loading, setLoading] = useState(false)
 	const [totalHits, setTotalHits] = useState(0)
 	const [hitsSum, setHitsSum] = useState(0)
-	const [page, setPage] = useState(null)
+	// const [page, setPage] = useState(1)
 
 	useEffect(() => {
+		// setPage(1);
+		page = 1
+		
 		if (searchQuery === '') return;
 
-		setPage(1);
 		setLoading(true);
 
 		try {
@@ -27,23 +29,17 @@ export const ImageGallery = ({searchQuery}) => {
 				setImages(hits);
 				setHitsSum(hitsSum => (hitsSum + hits.length));
 				setTotalHits(totalHits);
-				setPage(page => page + 1);
+				// setPage(prevPage => prevPage + 1);
 			}
 			);
-			// page += 1;
+			page += 1;
 		} catch (error) {
-			setError(error)
+			console.log(error)
 		}
 		finally {
 			setLoading(false)
 		}
-
 	}, [searchQuery])
-
-
-	useEffect(() => {
-
-	})
 
 	const handleLoadMoreBtnClick = () => {
 		setLoading(true)
@@ -52,16 +48,39 @@ export const ImageGallery = ({searchQuery}) => {
 			fetchImages(searchQuery, page).then(({ hits }) => {
 				setImages(images => [...images, ...hits]);
 				setHitsSum(hitsSum => (hitsSum + hits.length));
-				setPage(page => page + 1);
+				// setPage(page => page + 1);
 			}
 			);
-			// page += 1;
+			page += 1;
 		} catch (error) {
-
+			console.log(error)
 		} finally {
 			setLoading(false)
 		}
 	};
+
+	// const handleLoadMoreBtnClick = () => {
+	// 	setLoading(true)
+	// 	setPage(page => page + 1)
+	// }
+
+	// useEffect(() => {
+	// 	if (searchQuery === '') return;
+
+	// 	try {
+	// 		fetchImages(searchQuery, page).then(({ hits }) => {
+	// 			setImages(images => [...images, ...hits]);
+	// 			setHitsSum(hitsSum => (hitsSum + hits.length));
+	// 		}
+	// 		);
+	// 	} catch (error) {
+	// 		setError(error)
+	// 	} finally {
+	// 		setLoading(false)
+	// 	}
+	// }, [page])
+
+
 
 	return (
 		<div className={css.listWrapper}>
@@ -74,8 +93,7 @@ export const ImageGallery = ({searchQuery}) => {
 							/>
 						))}
 					</ul>
-
-					{<Button
+					{hitsSum < totalHits && <Button
 						type="button"
 						onClick={handleLoadMoreBtnClick}>
 						Load more
@@ -86,11 +104,6 @@ export const ImageGallery = ({searchQuery}) => {
 	);
 
 }
-
-
-
-
-
 
 
 

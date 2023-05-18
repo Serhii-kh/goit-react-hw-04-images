@@ -18,76 +18,70 @@ export const ImageGallery = (searchQuery) => {
 	useEffect(() => {
 		page = 1
 		setLoading(true)
-		if (searchQuery) {
+		if (searchQuery !== '') {
 			try {
-				fetchImages(searchQuery, page).then(({ hits, totalHits }) =>
-					setImages(hits)
-				// setHits(hits.length);
-				// setTotalHits(totalHits);
+				fetchImages(searchQuery, page).then(({ hits, totalHits }) => {
+					setImages(hits);
+					setHits(hits.length);
+					setTotalHits(totalHits);
+				}
 				);
-	page += 1;
-} catch (error) {
-	setError(error)
-}
-finally {
-	setLoading(false)
-}
+				page += 1;
+			} catch (error) {
+				setError(error)
+			}
+			finally {
+				setLoading(false)
+			}
 		}
-			
-		
 	}, [searchQuery])
 
 
-const handleLoadMoreBtnClick = () => {
-	setLoading(!loading)
-
-	try {
-		fetchImages(searchQuery, page).then(({ hits }) =>
-			setImages(images => [...images, ...hits])
-			// setHits(hits => (hits + hits.length))
-		);
-		page += 1;
-	} catch (error) {
-
-	} finally {
+	const handleLoadMoreBtnClick = () => {
 		setLoading(!loading)
-	}
-};
 
-const imagesLength = images.length;
+		try {
+			fetchImages(searchQuery, page).then(({ hits }) => {
+				setImages(images => [...images, ...hits]);
+				setHits(hits => (hits + hits.length));
+			}
+			);
+			page += 1;
+		} catch (error) {
 
-return (
-	<div className={css.listWrapper}>
-		{loading && <Loader />}
-		{imagesLength > 0 && (
-			<>
-				<ul className={css.ImageGallery}>
-					{images.map((image) => (
-						<ImageGalleryItem key={image.id} image={image}
-						/>
-					))}
-				</ul>
+		} finally {
+			setLoading(!loading)
+		}
+	};
 
-				{<Button
-					type="button"
-					onClick={handleLoadMoreBtnClick}>
-					Load more
-				</Button>}
-			</>
-		)}
-	</div>
-);
+	const imagesLength = images.length;
+
+	return (
+		<div className={css.listWrapper}>
+			{loading && <Loader />}
+			{imagesLength > 0 && (
+				<>
+					<ul className={css.ImageGallery}>
+						{images.map((image) => (
+							<ImageGalleryItem key={image.id} image={image}
+							/>
+						))}
+					</ul>
+
+					{<Button
+						type="button"
+						onClick={handleLoadMoreBtnClick}>
+						Load more
+					</Button>}
+				</>
+			)}
+		</div>
+	);
 
 }
 
 
-ImageGallery.propTypes = {
-	images: PropTypes.array,
-	loading: PropTypes.bool,
-	image: PropTypes.object,
-	onClick: PropTypes.func,
-	fetchImages: PropTypes.func,
-}
+
 
 
 
@@ -192,10 +186,10 @@ ImageGallery.propTypes = {
 // }
 
 
-// ImageGallery.propTypes = {
-// 	images: PropTypes.array,
-// 	loading: PropTypes.bool,
-// 	image: PropTypes.object,
-// 	onClick: PropTypes.func,
-// 	fetchImages: PropTypes.func,
-// }
+ImageGallery.propTypes = {
+	images: PropTypes.array,
+	loading: PropTypes.bool,
+	image: PropTypes.object,
+	onClick: PropTypes.func,
+	fetchImages: PropTypes.func,
+}

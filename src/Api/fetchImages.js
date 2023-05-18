@@ -13,12 +13,11 @@ export const fetchImages = async (searchQuery, page) => {
     const response = await instance.get(
       `?key=${API_KEY}&q=${searchQuery}&${BASE_FETCH_OPTIONS}&page=${page}`
     );
-    const responseData = response.data;
 
-    if (responseData.hits.length === 0) {
+    if (response.data.hits.length === 0) {
       alert('Please enter a valid search query');
     }
-    return responseData;
+    return response.data;
   } catch (error) {
     console.log(error);
   }

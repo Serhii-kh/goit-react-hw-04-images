@@ -3,8 +3,6 @@ import css from './Modal.module.css'
 import PropTypes from 'prop-types'
 
 export const Modal = ({ onClose, children }) => {
-
-
 	const HandleOverlayClose = e => {
 		if (e.currentTarget === e.target) onClose();
 	}

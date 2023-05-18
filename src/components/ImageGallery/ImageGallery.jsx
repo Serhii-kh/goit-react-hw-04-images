@@ -6,60 +6,67 @@ import { Loader } from 'components/Loader/Loader';
 import css from './ImageGallery.module.css';
 import PropTypes from 'prop-types'
 
-let page = 1;
+// let page = 1;
 
-export const ImageGallery = (searchQuery) => {
+export const ImageGallery = ({searchQuery}) => {
 	const [images, setImages] = useState([])
 	const [error, setError] = useState(null)
 	const [loading, setLoading] = useState(false)
 	const [totalHits, setTotalHits] = useState(0)
-	const [hits, setHits] = useState(0)
+	const [hitsSum, setHitsSum] = useState(0)
+	const [page, setPage] = useState(null)
 
 	useEffect(() => {
-		page = 1
-		setLoading(true)
-		if (searchQuery !== '') {
-			try {
-				fetchImages(searchQuery, page).then(({ hits, totalHits }) => {
-					setImages(hits);
-					setHits(hits.length);
-					setTotalHits(totalHits);
-				}
-				);
-				page += 1;
-			} catch (error) {
-				setError(error)
+		if (searchQuery === '') return;
+
+		setPage(1);
+		setLoading(true);
+
+		try {
+			fetchImages(searchQuery, page).then(({ hits, totalHits }) => {
+				setImages(hits);
+				setHitsSum(hitsSum => (hitsSum + hits.length));
+				setTotalHits(totalHits);
+				setPage(page => page + 1);
 			}
-			finally {
-				setLoading(false)
-			}
+			);
+			// page += 1;
+		} catch (error) {
+			setError(error)
 		}
+		finally {
+			setLoading(false)
+		}
+
 	}, [searchQuery])
 
 
+	useEffect(() => {
+
+	})
+
 	const handleLoadMoreBtnClick = () => {
-		setLoading(!loading)
+		setLoading(true)
 
 		try {
 			fetchImages(searchQuery, page).then(({ hits }) => {
 				setImages(images => [...images, ...hits]);
-				setHits(hits => (hits + hits.length));
+				setHitsSum(hitsSum => (hitsSum + hits.length));
+				setPage(page => page + 1);
 			}
 			);
-			page += 1;
+			// page += 1;
 		} catch (error) {
 
 		} finally {
-			setLoading(!loading)
+			setLoading(false)
 		}
 	};
-
-	const imagesLength = images.length;
 
 	return (
 		<div className={css.listWrapper}>
 			{loading && <Loader />}
-			{imagesLength > 0 && (
+			{images.length > 0 && (
 				<>
 					<ul className={css.ImageGallery}>
 						{images.map((image) => (

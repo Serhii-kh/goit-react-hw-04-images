@@ -7,10 +7,9 @@ import PropTypes from 'prop-types'
 export const Searchbar = ({ handlerFormSubmit }) => {
 	const [searchQuery, setSearchquery] = useState('')
 
-	const handleChange = e => {
-		const { value} = e.target;
-
-		setSearchquery(value)
+	const handleChange = ({ target: { value } }) => {
+		// const { value } = e.target;
+		setSearchquery(value);
 	};
 
 	const handleSubmit = e => {

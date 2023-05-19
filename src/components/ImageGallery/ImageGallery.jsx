@@ -19,9 +19,7 @@ export const ImageGallery = ({ searchQuery }) => {
 	useEffect(() => {
 		// setPage(1);
 		page = 1
-		
 		if (searchQuery === '') return;
-
 		setLoading(true);
 
 		try {
